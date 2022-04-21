@@ -56,12 +56,13 @@ int process_points(points_data_t &pts, FILE *f)
     int err = NONE;
 
     err = read_count(&count, f);
+
+    if (!count) //
+        err = ERR_NO_POINTS;
+
     if (!err)
     {
-        if (count) // count в начало
-            err = points_alloc(pts, count);
-        else
-            err = ERR_NO_POINTS;
+        err = points_alloc(pts, count);
 
         if (!err)
         {

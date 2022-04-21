@@ -30,11 +30,19 @@ void empty_figure(figure_t& fig)
 void copy_figure(figure_t& figure_dst, figure_t& figure_src)
 {
     figure_dst = figure_src;
-//    figure_dst.points.count = figure_src.points.count; //
-//    figure_dst.points.arr = figure_src.points.arr; //
+}
 
-//    figure_dst.edges.count = figure_src.edges.count; //
-//    figure_dst.edges.arr = figure_src.edges.arr; //
+int process_fields_figure(figure_t& fig, FILE *f)
+{
+    int err = process_points(fig.points, f);
+    if (!err)
+    {
+        err = process_edges(fig.edges, f);
+        if (err != NONE)
+            points_free(fig.points);
+    }
+
+    return err;
 }
 
 int load_figure_from_file(figure_t& fig, const char *filename)
@@ -44,13 +52,7 @@ int load_figure_from_file(figure_t& fig, const char *filename)
         return ERR_FILE_NOT_FOUND;
     figure_t fig_tmp = init();
 
-    int err = process_points(fig_tmp.points, f);
-    if (!err) // уровень абстракции, фигура - точка
-    {
-        err = process_edges(fig_tmp.edges, f);
-        if (err != NONE)
-            points_free(fig_tmp.points);
-    }
+    int err = process_fields_figure(fig_tmp, f); //
 
     fclose(f);
 
@@ -63,7 +65,6 @@ int load_figure_from_file(figure_t& fig, const char *filename)
     return err;
 }
 
-
 int draw_figure(figure_t fig, draw_data_t draw_data)
 {
     graph_scene_t a;
@@ -74,23 +75,31 @@ int draw_figure(figure_t fig, draw_data_t draw_data)
 
     draw_edges(fig.points, fig.edges, draw_data, a);
 
-    a.scene->setSceneRect(QRectF(QPointF(0, 0), QSizeF(draw_data.width, draw_data.height))); //
+    set_scene_rect(a, draw_data.width, draw_data.height); //
     set_graph_scene(draw_data.gView, a);
 
     return err;
 }
 
+points_data_t &get_figure_points(figure_t& fig)
+{
+    return fig.points;
+}
+
 int move_figure(figure_t& fig, move_data_t coeff)
 {
-    return move_points_array(fig.points.arr, fig.points.count, coeff);
+    points_data_t points = get_figure_points(fig);
+    return move_points_array(points.arr, points.count, coeff);
 }
 
 int scale_figure(figure_t& fig, scale_data_t coeff)
 {
-    return scale_points_array(fig.points.arr, fig.points.count, coeff);
+    points_data_t points = get_figure_points(fig);
+    return scale_points_array(points.arr, points.count, coeff);
 }
 
 int turn_figure(figure_t& fig, turn_data_t coeff)
 {
-    return turn_points_array(fig.points.arr, fig.points.count, coeff);
+    points_data_t points = get_figure_points(fig);
+    return turn_points_array(points.arr, points.count, coeff);
 }

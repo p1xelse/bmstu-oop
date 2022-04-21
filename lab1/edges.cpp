@@ -12,6 +12,7 @@ int edges_alloc(edges_data_t &edges, int count)
     edges.count = count;
 
     edges.arr = (edge_t*) calloc(count, sizeof(edge_t));
+
     if (!edges.arr)
         return ERR_ALLOCATE;
 
@@ -32,6 +33,7 @@ int read_edge(edge_t* edge, FILE* f)
 int read_edges_arr(edge_t* arr, int count, FILE *f)
 {
     int err = NONE;
+
     for (int i = 0; i < count && !err; i++)
     {
         if (read_edge(&arr[i], f))
@@ -48,23 +50,24 @@ edge_t* get_edges_arr(edges_data_t& edges)
 
 int process_edges(edges_data_t& edges, FILE* f)
 {
-    int count;
+    int count = 0;
     int err = NONE;
 
-    err = read_count(&count, f);
+    err = read_count(&count, f); //
+
+    if (!count) //
+        err = ERR_NO_EDGES;
+
     if (!err)
     {
-        if (count)
-            err = edges_alloc(edges, count);
-        else
-            err = ERR_NO_EDGES;
-
+        err = edges_alloc(edges, count);
         if (!err)
         {
             if ((err = read_edges_arr(edges.arr, count, f)) == ERR_FILE_FORMAT)
                 edges_free(edges);
         }
     }
+
     return err;
 }
 

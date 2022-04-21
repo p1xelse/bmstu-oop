@@ -85,6 +85,13 @@ void MainWindow::on_button_Scale_clicked()
     act.scale_data.ky = ui->lineEdit_ScaleY->text().toFloat();
     act.scale_data.kz = ui->lineEdit_ScaleZ->text().toFloat();
 
+    point_t center;
+    center.x = ui->lineEdit_centerX->text().toFloat();
+    center.y = ui->lineEdit_centerY->text().toFloat();
+    center.z = ui->lineEdit_centerZ->text().toFloat();
+
+    act.scale_data.center = center;
+
     errors err = transform_and_show(act, ui);
     if (err)
         display_error_message(err);
@@ -98,6 +105,13 @@ void MainWindow::on_button_Turn_clicked()
     act.turn_data.ox = ui->lineEdit_TurnX->text().toFloat();
     act.turn_data.oy = ui->lineEdit_TurnY->text().toFloat();
     act.turn_data.oz = ui->lineEdit_TurnZ->text().toFloat();
+
+    point_t center;
+    center.x = ui->lineEdit_centerX->text().toFloat();
+    center.y = ui->lineEdit_centerY->text().toFloat();
+    center.z = ui->lineEdit_centerZ->text().toFloat();
+
+    act.turn_data.center = center;
 
     errors err = transform_and_show(act, ui);
     if (err)

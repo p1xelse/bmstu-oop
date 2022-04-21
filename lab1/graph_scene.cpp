@@ -23,3 +23,8 @@ void set_graph_scene(QGraphicsView *gView, graph_scene_t &gr_scene)
     delete prev;
     gView->setScene(gr_scene.scene);
 }
+
+void set_scene_rect(graph_scene_t &gr_scene, int width, int height)
+{
+    gr_scene.scene->setSceneRect(QRectF(QPointF(0, 0), QSizeF(width, height)));
+}

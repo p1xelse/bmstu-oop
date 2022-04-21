@@ -12,5 +12,6 @@ typedef struct
 int init_graph_scene(graph_scene_t &gr_scene, QGraphicsView *gView);
 void del_graph_scene(graph_scene_t &gr_scene);
 void set_graph_scene(QGraphicsView *gView, graph_scene_t &gr_scene);
+void set_scene_rect(graph_scene_t &gr_scene, int width, int height);
 
 #endif // GRAPH_SCENE_H
