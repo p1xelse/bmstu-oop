@@ -1,2 +1,5 @@
 # bmstu-oop
-bmstu oop 4th sem
+## Lab 1
+Сделайте чтобы вертелось
+## Lab 2
+Реализация Set. Сначала вам покажется, что нужно std::set из STL. Но ничего подобного, нужно set как в питончике. :smiling_face_with_tear:
