@@ -20,7 +20,7 @@ constIterator<T>::constIterator(const constIterator<T>& iterator) {
 
 template <typename T>
 constIterator<T>::operator bool() const {
-    return cur.lock() != nullptr;
+    return cur.lock()->getNext() != nullptr;
 }
 
 template <typename T>

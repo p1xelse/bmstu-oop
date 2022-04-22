@@ -50,7 +50,9 @@ Set<T>::Set(std::initializer_list<T> elems) {
 }
 
 template <typename T>
-Set<T>::~Set() {}
+Set<T>::~Set() {
+    clear();
+}
 
 template <typename T>
 constIterator<T> Set<T>::find(const T &val) const {
@@ -64,9 +66,12 @@ constIterator<T> Set<T>::find(const T &val) const {
 template <typename T>
 bool Set<T>::append(const std::shared_ptr<SetNode<T>> &node) noexcept(false) {
     std::shared_ptr<SetNode<T>> tmpNode = nullptr;
+    std::shared_ptr<SetNode<T>> capNode = nullptr;
 
     try {
         tmpNode = std::shared_ptr<SetNode<T>>(new SetNode<T>(node->getValue()));
+
+        if (empty()) capNode = std::shared_ptr<SetNode<T>>(new SetNode<T>(T{}));
     } catch (const std::bad_alloc &exeption) {
         throw BadAllocateMemory(__TIME__, __FILE__, typeid(*this).name(),
                                 __FUNCTION__);
@@ -74,7 +79,9 @@ bool Set<T>::append(const std::shared_ptr<SetNode<T>> &node) noexcept(false) {
 
     if (empty()) {
         head = tmpNode;
-        tail = tmpNode;
+        head->setNext(capNode);
+        tail = head;
+        capNode->setPrev(tail);
         size++;
 
         return true;
@@ -85,6 +92,11 @@ bool Set<T>::append(const std::shared_ptr<SetNode<T>> &node) noexcept(false) {
     }
 
     tmpNode->setPrev(tail);
+
+    capNode = tail->getNext();
+    capNode->setPrev(tmpNode);
+    tmpNode->setNext(capNode);
+
     tail->setNext(tmpNode);
     tail = tmpNode;
     size++;
@@ -185,7 +197,7 @@ Set<T> &Set<T>::operator+=(const T &data) {
 }
 
 template <typename T>
-Set<T> Set<T>::operator+(const Set<T> &other) {
+Set<T> Set<T>::operator+(const Set<T> &other) const {
     Set<T> newSet(*this);
     newSet += other;
 
@@ -193,7 +205,7 @@ Set<T> Set<T>::operator+(const Set<T> &other) {
 }
 
 template <typename T>
-Set<T> Set<T>::operator+(const T &data) {
+Set<T> Set<T>::operator+(const T &data) const {
     Set<T> newSet(*this);
     newSet += data;
 
@@ -201,17 +213,17 @@ Set<T> Set<T>::operator+(const T &data) {
 }
 
 template <typename T>
-Set<T> Set<T>::intersect(const Set<T> &other) {
+Set<T> Set<T>::intersect(const Set<T> &other) const {
     return *this & other;
 }
 
 template <typename T>
-Set<T> Set<T>::intersect(const T &data) {
+Set<T> Set<T>::intersect(const T &data) const {
     return *this & data;
 }
 
 template <typename T>
-Set<T> Set<T>::operator&(const Set<T> &other) {
+Set<T> Set<T>::operator&(const Set<T> &other) const {
     Set<T> newSet;
 
     for (auto iter = cbegin(); iter != cend(); ++iter) {
@@ -224,7 +236,7 @@ Set<T> Set<T>::operator&(const Set<T> &other) {
 }
 
 template <typename T>
-Set<T> Set<T>::operator&(const T &data) {
+Set<T> Set<T>::operator&(const T &data) const {
     Set<T> newSet;
 
     if (find(data)) {
@@ -255,12 +267,12 @@ Set<T> &Set<T>::operator&=(const T &data) {
 }
 
 template <typename T>
-Set<T> Set<T>::operator|(const Set<T> &other) {
+Set<T> Set<T>::operator|(const Set<T> &other) const {
     return *this + other;
 }
 
 template <typename T>
-Set<T> Set<T>::operator|(const T &data) {
+Set<T> Set<T>::operator|(const T &data) const {
     return *this + data;
 }
 
@@ -279,27 +291,27 @@ Set<T> &Set<T>::operator|=(const T &data) {
 }
 
 template <typename T>
-Set<T> Set<T>::combine(const Set<T> &other) {
+Set<T> Set<T>::combine(const Set<T> &other) const {
     return *this | other;
 }
 
 template <typename T>
-Set<T> Set<T>::combine(const T &data) {
+Set<T> Set<T>::combine(const T &data) const {
     return *this | data;
 }
 
 template <typename T>
-Set<T> Set<T>::difference(const Set<T> &other) {
+Set<T> Set<T>::difference(const Set<T> &other) const {
     return *this - other;
 }
 
 template <typename T>
-Set<T> Set<T>::difference(const T &data) {
+Set<T> Set<T>::difference(const T &data) const {
     return *this - data;
 }
 
 template <typename T>
-Set<T> Set<T>::operator-(const Set<T> &other) {
+Set<T> Set<T>::operator-(const Set<T> &other) const {
     Set<T> newSet(*this);
 
     for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
@@ -310,7 +322,7 @@ Set<T> Set<T>::operator-(const Set<T> &other) {
 }
 
 template <typename T>
-Set<T> Set<T>::operator-(const T &data) {
+Set<T> Set<T>::operator-(const T &data) const {
     Set<T> newSet(*this);
     newSet.erase(data);
 
@@ -334,13 +346,17 @@ Set<T> &Set<T>::operator-=(const T &data) {
 }
 
 template <typename T>
-Set<T> Set<T>::symmetric_difference(const Set<T> &other) {}
+Set<T> Set<T>::symmetric_difference(const Set<T> &other) const {
+    return *this ^ other;
+}
 
 template <typename T>
-Set<T> Set<T>::symmetric_difference(const T &data) {}
+Set<T> Set<T>::symmetric_difference(const T &data) const {
+    return *this ^ data;
+}
 
 template <typename T>
-Set<T> Set<T>::operator^(const Set<T> &other) {
+Set<T> Set<T>::operator^(const Set<T> &other) const {
     Set<T> newSet = *this | other;
     newSet -= *this & other;
 
@@ -348,7 +364,7 @@ Set<T> Set<T>::operator^(const Set<T> &other) {
 }
 
 template <typename T>
-Set<T> Set<T>::operator^(const T &data) {
+Set<T> Set<T>::operator^(const T &data) const {
     Set<T> newSet = *this | data;
     newSet -= *this & data;
 
@@ -387,7 +403,7 @@ constIterator<T> Set<T>::erase(const T &value) {
 template <typename T>
 constIterator<T> Set<T>::erase(constIterator<T> rmIter) {
     if (empty()) {
-        return constIterator<T>();
+        return cend();
     }
 
     if (!rmIter) {
@@ -397,6 +413,15 @@ constIterator<T> Set<T>::erase(constIterator<T> rmIter) {
 
     auto rmNodePointer = rmIter.getNodePointer();
 
+    if (this->size == 1) {
+        head->setNull();
+        head = tail = nullptr;
+        size--;
+        return cend();
+    }
+
+    size--;
+
     if (rmNodePointer == head) {
         head = head->getNext();
         head->setPrevNull();
@@ -404,13 +429,13 @@ constIterator<T> Set<T>::erase(constIterator<T> rmIter) {
 
     auto result = rmNodePointer->getNext();
     rmNodePointer->remove();
-    --size;
 
     return constIterator<T>(result);
 }
 
 template <typename T>
 void Set<T>::clear() {
+    if (empty()) return;
     auto next = head->getNext();
 
     for (; head; head = next) {
@@ -458,14 +483,37 @@ bool Set<T>::operator==(const Set<T> &other) const {
     if (size != other.size) {
         return false;
     }
-    if ((*this - other).empty()) {
-        return true;
+
+    for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
+        if (!find(*iter)) {
+            return false;
+        }
     }
 
-    return false;
+    return true;
 }
 
 template <typename T>
 bool Set<T>::operator!=(const Set<T> &other) const {
     return !(*this == other);
+}
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, Set<T> &set) {
+    for (auto el = set.cbegin(); el != set.cend(); ++el) {
+        os << *el << " ";
+    }
+
+    os << std::endl;
+    return os;
+}
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const Set<T> &set) {
+    for (auto el = set.cbegin(); el != set.cend(); ++el) {
+        os << *el << " ";
+    }
+
+    os << std::endl;
+    return os;
 }

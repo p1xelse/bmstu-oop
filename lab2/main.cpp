@@ -11,6 +11,19 @@ void printSet(Set<T> &set) {
 
     cout << endl;
 }
+template <typename T>
+void printReverseSet(Set<T> &set) {
+    for (auto iter = set.cend();; --iter)
+    {
+        if (iter != set.cend())
+            cout << *iter << " ";
+        if (iter == set.cbegin())
+            break;
+        
+    }
+
+    cout << endl;
+}
 
 template <typename T>
 void printSet(Set<T> &&set) {
@@ -18,14 +31,21 @@ void printSet(Set<T> &&set) {
 }
 
 int main() {
-    Set<int> set1({1, 2, 3, 4});
-    printSet(set1);
+    Set<int> set1({1, 2, 3});
+    auto iter = set1.cend();
+    // iter++;
+    // iter++;
+    // iter--;
+    printReverseSet(set1);
+    // cout << *iter;
 
-    Set<int> set2({2, 3});
-    printSet(set2);
+    // Set<int> set2({2, 3});
+    // printSet(set2);
 
-    printSet(set1 + set2);
-    printSet(set1 - set2);
+    // printSet(set1 + set2);
+    // printSet(set1 - set2);
+    // auto iter = set1.cend();
+    // iter--;
 
     return 0;
 }

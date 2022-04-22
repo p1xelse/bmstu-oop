@@ -27,7 +27,7 @@ void SetNode<T>::setNext(std::shared_ptr<SetNode<T>> &node) {
 }
 
 template <typename T>
-void SetNode<T>::setPrevNext() {
+void SetNode<T>::setNextNull() {
     next = nullptr;
 }
 

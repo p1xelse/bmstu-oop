@@ -26,40 +26,40 @@ class Set : public BaseContainer {
     Set<T> update(std::initializer_list<T> initList) noexcept(false);
     Set<T> update(T *initArr, size_t len) noexcept(false);
 
-    Set<T> operator+(const Set<T> &other);
-    Set<T> operator+(const T &data);
+    Set<T> operator+(const Set<T> &other) const;
+    Set<T> operator+(const T &data) const;
     Set<T> &operator+=(const Set<T> &other);
     Set<T> &operator+=(const T &data);
 
-    Set<T> intersect(const Set<T> &other);
-    Set<T> intersect(const T &data);
+    Set<T> intersect(const Set<T> &other) const;
+    Set<T> intersect(const T &data) const;
 
-    Set<T> operator&(const Set<T> &other);
-    Set<T> operator&(const T &data);
+    Set<T> operator&(const Set<T> &other) const;
+    Set<T> operator&(const T &data) const;
     Set<T> &operator&=(const Set<T> &other);
     Set<T> &operator&=(const T &data);
 
-    Set<T> combine(const Set<T> &other);
-    Set<T> combine(const T &data);
+    Set<T> combine(const Set<T> &other) const;
+    Set<T> combine(const T &data) const;
 
-    Set<T> operator|(const Set<T> &other);
-    Set<T> operator|(const T &data);
+    Set<T> operator|(const Set<T> &other) const;
+    Set<T> operator|(const T &data) const;
     Set<T> &operator|=(const Set<T> &other);
     Set<T> &operator|=(const T &data);
 
-    Set<T> difference(const Set<T> &other);
-    Set<T> difference(const T &data);
+    Set<T> difference(const Set<T> &other) const;
+    Set<T> difference(const T &data) const;
 
-    Set<T> operator-(const Set<T> &other);
-    Set<T> operator-(const T &data);
+    Set<T> operator-(const Set<T> &other) const;
+    Set<T> operator-(const T &data) const;
     Set<T> &operator-=(const Set<T> &other);
     Set<T> &operator-=(const T &data);
 
-    Set<T> symmetric_difference(const Set<T> &other);
-    Set<T> symmetric_difference(const T &data);
+    Set<T> symmetric_difference(const Set<T> &other) const;
+    Set<T> symmetric_difference(const T &data) const;
 
-    Set<T> operator^(const Set<T> &other);
-    Set<T> operator^(const T &data);
+    Set<T> operator^(const Set<T> &other) const;
+    Set<T> operator^(const T &data) const;
     Set<T> &operator^=(const Set<T> &other);
     Set<T> &operator^=(const T &data);
 

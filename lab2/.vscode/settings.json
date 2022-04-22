@@ -66,7 +66,8 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "any": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }
