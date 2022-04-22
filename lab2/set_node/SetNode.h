@@ -10,7 +10,7 @@ class SetNode {
     explicit SetNode(std::shared_ptr<SetNode<T>> &node);
 
     void set(const T &value);
-    
+
     void setNext(const SetNode<T> &node);
     void setNext(std::shared_ptr<SetNode<T>> &node_ptr);
     void setNextNull();
