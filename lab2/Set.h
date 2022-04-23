@@ -3,15 +3,15 @@
 #include "BaseContainer.h"
 #include "SetNode.h"
 #include "constIterator.h"
-#include "exeptions.h"
+#include "exceptions.h"
 
 template <typename T>
 class Set : public BaseContainer {
  public:
     Set() = default;
     Set(const Set<T> &list) noexcept(false);
-    Set(Set<T> &&list) noexcept;
-    Set(std::initializer_list<T> elems);
+    Set(Set<T> &&list) noexcept(false);
+    Set(std::initializer_list<T> elems) noexcept(false);
 
     ~Set() override;
 

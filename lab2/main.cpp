@@ -27,12 +27,22 @@ void printSet(Set<T> &&set) {
 }
 
 int main() {
-    Set<int> set1({1, 2, 3});
-    auto iter = set1.cend();
+    Set<int> set({1, 2, 3});
+    auto iter = set.cend();
+    iter--;
+
+    cout << *iter << endl;
+    Set<int> set2({4, 5, 6});
+
+    set += set2;
+
+    cout << *iter << endl;
+
+    // auto iter = set1.cbegin();
     // iter++;
     // iter++;
     // iter--;
-    printReverseSet(set1);
+    // printReverseSet(set1);
     // cout << *iter;
 
     // Set<int> set2({2, 3});

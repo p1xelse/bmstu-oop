@@ -1,7 +1,5 @@
 #pragma once
 
-#include <chrono>
-
 #include "Set.h"
 
 template <typename T>
@@ -21,8 +19,9 @@ constIterator<T> Set<T>::cend() const {
     return constIterator<T>();
 }
 
+
 template <typename T>
-Set<T>::Set(const Set<T> &other) : Set() {
+Set<T>::Set(const Set<T> &other) {
     for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
         std::shared_ptr<SetNode<T>> tmpNode = nullptr;
 
@@ -38,7 +37,8 @@ Set<T>::Set(const Set<T> &other) : Set() {
 }
 
 template <typename T>
-Set<T>::Set(Set<T> &&other) noexcept : head(other.head), tail(other.tail) {
+Set<T>::Set(Set<T> &&other) noexcept(false)
+    : head(other.head), tail(other.tail) {
     this->size = other.size;
 }
 
@@ -87,7 +87,7 @@ bool Set<T>::append(const std::shared_ptr<SetNode<T>> &node) noexcept(false) {
         return true;
     }
 
-    if (find(tmpNode->getValue())) {
+    if (find(tmpNode->getValue()) != cend()) {
         return false;
     }
 
@@ -227,7 +227,7 @@ Set<T> Set<T>::operator&(const Set<T> &other) const {
     Set<T> newSet;
 
     for (auto iter = cbegin(); iter != cend(); ++iter) {
-        if (other.find(*iter)) {
+        if (other.find(*iter) != other.cend()) {
             newSet.append(*iter);
         }
     }
@@ -239,7 +239,7 @@ template <typename T>
 Set<T> Set<T>::operator&(const T &data) const {
     Set<T> newSet;
 
-    if (find(data)) {
+    if (find(data) != cend()) {
         newSet.append(data);
     }
 
@@ -393,7 +393,7 @@ template <typename T>
 constIterator<T> Set<T>::erase(const T &value) {
     auto iterator = find(value);
 
-    if (iterator) {
+    if (iterator != cend()) {
         return erase(iterator);
     }
 
@@ -407,8 +407,8 @@ constIterator<T> Set<T>::erase(constIterator<T> rmIter) {
     }
 
     if (!rmIter) {
-        throw IteratorExeption(__TIME__, __FILE__, typeid(*this).name(),
-                               __FUNCTION__);
+        throw InvalidIteratorExeption(__TIME__, __FILE__, typeid(*this).name(),
+                                      __FUNCTION__);
     }
 
     auto rmNodePointer = rmIter.getNodePointer();
@@ -485,7 +485,7 @@ bool Set<T>::operator==(const Set<T> &other) const {
     }
 
     for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
-        if (!find(*iter)) {
+        if (find(*iter) == cend()) {
             return false;
         }
     }

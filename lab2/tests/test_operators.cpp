@@ -67,26 +67,26 @@ TEST(OperatorsTest, StringifyEmpty) {
     auto a = Set<int>();
     std::ostringstream ss;
     ss << a;
-    EXPECT_EQ(ss.str(), "");
+    EXPECT_EQ(ss.str(), "\n");
 }
 
 TEST(OperatorsTest, StringifyConstEmpty) {
     const auto a = Set<int>();
     std::ostringstream ss;
     ss << a;
-    EXPECT_EQ(ss.str(), "");
+    EXPECT_EQ(ss.str(), "\n");
 }
 
 TEST(OperatorsTest, Stringify) {
     auto a = Set<int>{1, 2, 3, 4};
     std::ostringstream ss;
     ss << a;
-    EXPECT_EQ(ss.str(), "1 2 3 4 ");
+    EXPECT_EQ(ss.str(), "1 2 3 4 \n");
 }
 
 TEST(OperatorsTest, StringifyConst) {
     const auto a = Set<int>{1, 2, 3, 4};
     std::ostringstream ss;
     ss << a;
-    EXPECT_EQ(ss.str(), "1 2 3 4 ");
+    EXPECT_EQ(ss.str(), "1 2 3 4 \n");
 }

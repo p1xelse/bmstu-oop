@@ -1,3 +1,5 @@
+#pragma once
+
 #include <exception>
 #include <string>
 
@@ -5,8 +7,8 @@ class SetException : public std::exception {
  public:
     SetException(const std::string &time, const std::string &filename,
                  const std::string &classname, const std::string &method) {
-        exeptionMsg = "\nTime: " + time + "\tFile: " + filename +
-                      "\n\tClass: " + classname + "\n\tMethod: " + method;
+        exeptionMsg = "\nTime: " + time + "\nFile: " + filename +
+                      "\nClass: " + classname + "\nMethod: " + method;
     }
 
     const char *what() const noexcept override { return exeptionMsg.c_str(); }
@@ -25,12 +27,24 @@ class BadAllocateMemory : public SetException {
     }
 };
 
-class IteratorExeption : public SetException {
+class InvalidIteratorExeption : public SetException {
  public:
-    IteratorExeption(const std::string &time, const std::string &filename,
-                     const std::string &classname, const std::string &method)
+    InvalidIteratorExeption(const std::string &time,
+                            const std::string &filename,
+                            const std::string &classname,
+                            const std::string &method)
         : SetException(time, filename, classname, method) {
         std::string iteratorMsg = "\n ERROR: Invalid iterator:\n";
+        exeptionMsg = iteratorMsg + exeptionMsg;
+    }
+};
+
+class DeletedObjExeption : public SetException {
+ public:
+    DeletedObjExeption(const std::string &time, const std::string &filename,
+                       const std::string &classname, const std::string &method)
+        : SetException(time, filename, classname, method) {
+        std::string iteratorMsg = "\n ERROR: Object was deleted:\n";
         exeptionMsg = iteratorMsg + exeptionMsg;
     }
 };

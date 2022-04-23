@@ -9,7 +9,6 @@
 template <typename T>
 class Set;
 
-
 template <typename T>
 class constIterator : std::iterator<std::input_iterator_tag, T> {
  public:
@@ -29,7 +28,7 @@ class constIterator : std::iterator<std::input_iterator_tag, T> {
     constIterator<T>& operator--();
     constIterator<T> operator--(int);
 
-    constIterator<T>& operator=(const constIterator<T>& other) const;
+    constIterator<T>& operator=(const constIterator<T>& other);
 
     bool operator==(const constIterator<T>& other) const;
     bool operator!=(const constIterator<T>& other) const;
@@ -39,6 +38,8 @@ class constIterator : std::iterator<std::input_iterator_tag, T> {
     void prev();
     SetNode<T>& getCurNode() const;
     std::shared_ptr<SetNode<T>> getNodePointer() const;
+
+    bool checkExpired(const std::string& func) const;
 
  private:
     std::weak_ptr<SetNode<T>> cur;
