@@ -7,8 +7,8 @@ TEST(ConstructorTest, Default) {
 }
 
 TEST(ConstructorTest, Copy) {
-    Set<int> a{1, 2, 3, 4, 5};
-    EXPECT_EQ(a, (Set<int>{1, 2, 3, 4, 5}));
+    Set<int> a({1, 2, 3, 4, 5});
+    EXPECT_EQ(a, (Set<int>({1, 2, 3, 4, 5})));
 
     auto b = a;
     EXPECT_EQ(b, (Set<int>{1, 2, 3, 4, 5}));

@@ -3,7 +3,7 @@
 #include "Set.h"
 
 template <typename T>
-constIterator<T> Set<T>::cbegin() const {
+constIterator<T> Set<T>::begin() const {
     if (head != nullptr) {
         return constIterator<T>(head);
     }
@@ -11,7 +11,7 @@ constIterator<T> Set<T>::cbegin() const {
 }
 
 template <typename T>
-constIterator<T> Set<T>::cend() const {
+constIterator<T> Set<T>::end() const {
     if (tail != nullptr) {
         return constIterator<T>(tail->getNext());
     }
@@ -19,10 +19,9 @@ constIterator<T> Set<T>::cend() const {
     return constIterator<T>();
 }
 
-
 template <typename T>
 Set<T>::Set(const Set<T> &other) {
-    for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
+    for (auto iter = other.begin(); iter != other.end(); ++iter) {
         std::shared_ptr<SetNode<T>> tmpNode = nullptr;
 
         try {
@@ -37,15 +36,29 @@ Set<T>::Set(const Set<T> &other) {
 }
 
 template <typename T>
-Set<T>::Set(Set<T> &&other) noexcept(false)
-    : head(other.head), tail(other.tail) {
+Set<T>::Set(Set<T> &&other) noexcept : head(other.head), tail(other.tail) {
     this->size = other.size;
 }
 
 template <typename T>
 Set<T>::Set(std::initializer_list<T> elems) {
-    for (auto elem : elems) {
+    for (auto &elem : elems) {
         append(elem);
+    }
+}
+
+template <typename T>
+template <typename IterType>
+Set<T>::Set(IterType &begin, IterType &end) {
+    for (auto iter = begin; iter != end; ++iter) {
+        append(*iter);
+    }
+}
+
+template <typename T>
+Set<T>::Set(T *arr, size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        append(arr[i]);
     }
 }
 
@@ -55,9 +68,21 @@ Set<T>::~Set() {
 }
 
 template <typename T>
-constIterator<T> Set<T>::find(const T &val) const {
-    auto iter = cbegin();
-    for (; iter != cend() && *iter != val; ++iter) {
+bool Set<T>::belong(const T &val) const {
+    auto iter = begin();
+    for (auto iter = begin(); iter != end(); ++iter) {
+        if (*iter == val) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template <typename T>
+constIterator<T> Set<T>::getIter(const T &val) const {
+    auto iter = begin();
+    for (; iter != end() && *iter != val; ++iter) {
     }
 
     return iter;
@@ -71,7 +96,9 @@ bool Set<T>::append(const std::shared_ptr<SetNode<T>> &node) noexcept(false) {
     try {
         tmpNode = std::shared_ptr<SetNode<T>>(new SetNode<T>(node->getValue()));
 
-        if (empty()) capNode = std::shared_ptr<SetNode<T>>(new SetNode<T>(T{}));
+        if (empty()) {
+            capNode = std::shared_ptr<SetNode<T>>(new SetNode<T>(T{}));
+        }
     } catch (const std::bad_alloc &exeption) {
         throw BadAllocateMemory(__TIME__, __FILE__, typeid(*this).name(),
                                 __FUNCTION__);
@@ -87,7 +114,7 @@ bool Set<T>::append(const std::shared_ptr<SetNode<T>> &node) noexcept(false) {
         return true;
     }
 
-    if (find(tmpNode->getValue()) != cend()) {
+    if (belong(tmpNode->getValue())) {
         return false;
     }
 
@@ -182,7 +209,7 @@ Set<T> Set<T>::update(T *initArr, size_t len) noexcept(false) {
 
 template <typename T>
 Set<T> &Set<T>::operator+=(const Set<T> &other) {
-    for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
+    for (auto iter = other.begin(); iter != other.end(); ++iter) {
         append(*iter);
     }
 
@@ -226,8 +253,8 @@ template <typename T>
 Set<T> Set<T>::operator&(const Set<T> &other) const {
     Set<T> newSet;
 
-    for (auto iter = cbegin(); iter != cend(); ++iter) {
-        if (other.find(*iter) != other.cend()) {
+    for (auto iter = begin(); iter != end(); ++iter) {
+        if (other.belong(*iter)) {
             newSet.append(*iter);
         }
     }
@@ -239,7 +266,7 @@ template <typename T>
 Set<T> Set<T>::operator&(const T &data) const {
     Set<T> newSet;
 
-    if (find(data) != cend()) {
+    if (belong(data)) {
         newSet.append(data);
     }
 
@@ -314,7 +341,7 @@ template <typename T>
 Set<T> Set<T>::operator-(const Set<T> &other) const {
     Set<T> newSet(*this);
 
-    for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
+    for (auto iter = other.begin(); iter != other.end(); ++iter) {
         newSet.erase(*iter);
     }
 
@@ -331,7 +358,7 @@ Set<T> Set<T>::operator-(const T &data) const {
 
 template <typename T>
 Set<T> &Set<T>::operator-=(const Set<T> &other) {
-    for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
+    for (auto iter = other.begin(); iter != other.end(); ++iter) {
         erase(*iter);
     }
 
@@ -391,19 +418,19 @@ Set<T> &Set<T>::operator^=(const T &data) {
 
 template <typename T>
 constIterator<T> Set<T>::erase(const T &value) {
-    auto iterator = find(value);
+    auto iterator = getIter(value);
 
-    if (iterator != cend()) {
+    if (iterator != end()) {
         return erase(iterator);
     }
 
-    return cend();
+    return end();
 }
 
 template <typename T>
 constIterator<T> Set<T>::erase(constIterator<T> rmIter) {
     if (empty()) {
-        return cend();
+        return end();
     }
 
     if (!rmIter) {
@@ -416,11 +443,11 @@ constIterator<T> Set<T>::erase(constIterator<T> rmIter) {
     if (this->size == 1) {
         head->setNull();
         head = tail = nullptr;
-        size--;
-        return cend();
+        this->size--;
+        return end();
     }
 
-    size--;
+    this->size--;
 
     if (rmNodePointer == head) {
         head = head->getNext();
@@ -462,8 +489,19 @@ Set<T> &Set<T>::operator=(const Set<T> &other) noexcept(false) {
 
     clear();
 
-    for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
+    for (auto iter = other.begin(); iter != other.end(); ++iter) {
         append(*iter);
+    }
+
+    return *this;
+}
+
+template <typename T>
+Set<T> &Set<T>::operator=(std::initializer_list<T> initList) {
+    clear();
+
+    for (auto &el : initList) {
+        append(el);
     }
 
     return *this;
@@ -484,8 +522,8 @@ bool Set<T>::operator==(const Set<T> &other) const {
         return false;
     }
 
-    for (auto iter = other.cbegin(); iter != other.cend(); ++iter) {
-        if (find(*iter) == cend()) {
+    for (auto iter = other.begin(); iter != other.end(); ++iter) {
+        if (!belong(*iter)) {
             return false;
         }
     }
@@ -499,8 +537,38 @@ bool Set<T>::operator!=(const Set<T> &other) const {
 }
 
 template <typename T>
+bool Set<T>::operator<(const Set<T> &other) const {
+    if (this->size >= other.size) {
+        return false;
+    }
+
+    for (auto &el : *this) {
+        if (!other.belong(el)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+template <typename T>
+bool Set<T>::operator>(const Set<T> &other) const {
+    return other < *this;
+}
+
+template <typename T>
+bool Set<T>::operator<=(const Set<T> &other) const {
+    return *this == other || *this < other;
+}
+
+template <typename T>
+bool Set<T>::operator>=(const Set<T> &other) const {
+    return *this == other || *this > other;
+}
+
+template <typename T>
 std::ostream &operator<<(std::ostream &os, Set<T> &set) {
-    for (auto el = set.cbegin(); el != set.cend(); ++el) {
+    for (auto el = set.begin(); el != set.end(); ++el) {
         os << *el << " ";
     }
 
@@ -510,7 +578,7 @@ std::ostream &operator<<(std::ostream &os, Set<T> &set) {
 
 template <typename T>
 std::ostream &operator<<(std::ostream &os, const Set<T> &set) {
-    for (auto el = set.cbegin(); el != set.cend(); ++el) {
+    for (auto el = set.begin(); el != set.end(); ++el) {
         os << *el << " ";
     }
 

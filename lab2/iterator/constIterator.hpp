@@ -106,9 +106,7 @@ bool constIterator<T>::operator!=(const constIterator<T>& other) const {
 
 template <typename T>
 constIterator<T>& constIterator<T>::operator=(const constIterator<T>& other) {
-    checkExpired(__FUNCTION__);
-
-    cur = other.cur.lock();
+    cur = other.cur;
     return *this;
 }
 
