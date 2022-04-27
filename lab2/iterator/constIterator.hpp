@@ -17,6 +17,7 @@ constIterator<T>::constIterator(const std::shared_ptr<SetNode<T>>& node) {
 
 template <typename T>
 constIterator<T>::constIterator(const constIterator<T>& iterator) {
+    iterator.checkExpired(__FUNCTION__);
     cur = iterator.cur.lock();
 }
 

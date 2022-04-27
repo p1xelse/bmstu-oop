@@ -49,7 +49,7 @@ Set<T>::Set(std::initializer_list<T> elems) {
 
 template <typename T>
 template <typename IterType>
-Set<T>::Set(IterType &begin, IterType &end) {
+Set<T>::Set(IterType begin, IterType end) {
     for (auto iter = begin; iter != end; ++iter) {
         append(*iter);
     }
@@ -285,10 +285,12 @@ Set<T> &Set<T>::operator&=(const Set<T> &other) {
 
 template <typename T>
 Set<T> &Set<T>::operator&=(const T &data) {
-    Set<T> newSet = *this & data;
-
-    clear();
-    *this = newSet;
+    if (belong(data)) {
+        clear();
+        append(data);
+    } else {
+        clear();
+    }
 
     return *this;
 }

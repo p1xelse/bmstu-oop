@@ -11,12 +11,12 @@ class Set : public BaseContainer {
     Set() = default;
     Set(const Set<T> &list);
     Set(Set<T> &&list) noexcept;
-    Set(std::initializer_list<T> elems);
+    explicit Set(std::initializer_list<T> elems);
 
     template <typename IterType>
-    Set(IterType &begin, IterType &end);
+    Set(IterType begin, IterType end);  //
 
-    Set(T *arr, size_t len);
+    Set(T *arr, size_t len);  //
 
     ~Set() override;
 
@@ -77,18 +77,17 @@ class Set : public BaseContainer {
     size_t getSize();
 
     // Lookup
-    bool belong(const T &val) const;
+    bool belong(const T &val) const;  //
 
-    // Non-member
     Set<T> &operator=(const Set<T> &other);
     Set<T> &operator=(Set<T> &&other) noexcept;
-    Set<T> &operator=(std::initializer_list<T> initList);
+    Set<T> &operator=(std::initializer_list<T> initList);  //
 
     bool operator==(const Set<T> &other) const;
     bool operator!=(const Set<T> &other) const;
     bool operator<(const Set<T> &other) const;
     bool operator>(const Set<T> &other) const;
-    bool operator<=(const Set<T> &other) const;
+    bool operator<=(const Set<T> &other) const;  //
     bool operator>=(const Set<T> &other) const;
 
     // Iterators

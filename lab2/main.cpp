@@ -26,12 +26,17 @@ using namespace std;
 //     printSet(set);
 // }
 
+
+
 #include <vector>
 
 int main() {
-    Set<int> set({1, 2, 3});
-    Set<int> set1({1, 2, 3});
-    std::cout << (set > set1);
+    vector<int> vec({1, 2, 3});
+    auto beg = vec.begin();
+    auto end = vec.end();
+
+    Set<int> set(beg, end);
+    std::cout << set;
 
 
 
